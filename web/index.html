@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📻 Radio Fuera de Línea - EA5JTV</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>📻 RADIO FUERA DE LÍNEA</h1>
+                <p class="subtitle">EA5JTV • REMER 03T804 • Sistema de Emergencias Offline</p>
+            </div>
+            <div class="header-status">
+                <span id="time" class="time"></span>
+                <span id="signal" class="signal">📡 Conectado</span>
+            </div>
+        </header>
+
+        <!-- Main Navigation -->
+        <div class="nav-grid">
+            <a href="dashboard.html" class="nav-button nav-map">
+                <div class="nav-icon">📍</div>
+                <div class="nav-title">MAPA</div>
+                <div class="nav-desc">Posiciones en tiempo real</div>
+            </a>
+
+            <a href="chat.html" class="nav-button nav-chat">
+                <div class="nav-icon">💬</div>
+                <div class="nav-title">CHAT</div>
+                <div class="nav-desc">Mensajería centralizada</div>
+            </a>
+
+            <a href="documentos.html" class="nav-button nav-docs">
+                <div class="nav-icon">📂</div>
+                <div class="nav-title">DOCUMENTOS</div>
+                <div class="nav-desc">Planos, manuales, primeros auxilios</div>
+            </a>
+
+            <a href="status.html" class="nav-button nav-status">
+                <div class="nav-icon">⚙️</div>
+                <div class="nav-title">ESTADO</div>
+                <div class="nav-desc">Estado de servicios</div>
+            </a>
+        </div>
+
+        <!-- Quick Access -->
+        <section class="quick-access">
+            <h2>📡 SERVICIOS RÁPIDOS</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>APRS/Direwolf</h3>
+                    <p id="aprs-status">● Online</p>
+                    <button onclick="goTo('http://localhost:9000')">Acceder</button>
+                </div>
+                <div class="service-card">
+                    <h3>Winlink/Pat</h3>
+                    <p id="winlink-status">● Online</p>
+                    <button onclick="goTo('http://localhost:8080')">Acceder</button>
+                </div>
+                <div class="service-card">
+                    <h3>JS8Call</h3>
+                    <p id="js8-status">● Online</p>
+                    <button onclick="goTo('http://localhost:2237')">Acceder</button>
+                </div>
+                <div class="service-card">
+                    <h3>Meshtastic</h3>
+                    <p id="mesh-status">● Online</p>
+                    <button onclick="goTo('http://localhost:4403')">Acceder</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Info -->
+        <section class="system-info">
+            <h2>ℹ️ INFORMACIÓN DEL SISTEMA</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="label">Indicativo:</span>
+                    <span class="value">EA5JTV-1</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">REMER:</span>
+                    <span class="value">03T804</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Red WiFi:</span>
+                    <span class="value">RADIO-OFFLINE</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">IP Local:</span>
+                    <span class="value">192.168.4.1</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Dispositivos:</span>
+                    <span class="value" id="device-count">0/5</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Memoria:</span>
+                    <span class="value" id="memory-usage">--</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Emergency Alert -->
+        <section class="emergency-alert">
+            <button class="alert-button" onclick="showEmergency()">
+                🚨 ALERTA DE EMERGENCIA
+            </button>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Actualizar hora
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('time').textContent = 
+                now.toLocaleTimeString('es-ES');
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Ir a un servicio
+        function goTo(url) {
+            window.open(url, '_blank');
+        }
+
+        // Mostrar alerta de emergencia
+        function showEmergency() {
+            alert('🚨 ALERTA ENVIADA A TODOS LOS EQUIPOS\n\nModo: EMERGENCIA\nCanalizado a: TODOS\nFrecuencia: 145.500 MHz\n\nContinúa en chat para coordinar.');
+        }
+
+        // Cargar estado del sistema
+        async function loadSystemStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                
+                document.getElementById('aprs-status').textContent = 
+                    data.aprs ? '● Online' : '● Offline';
+                document.getElementById('winlink-status').textContent = 
+                    data.winlink ? '● Online' : '● Offline';
+                document.getElementById('js8-status').textContent = 
+                    data.js8 ? '● Online' : '● Offline';
+                document.getElementById('mesh-status').textContent = 
+                    data.mesh ? '● Online' : '● Offline';
+                document.getElementById('device-count').textContent = 
+                    data.devices + '/5';
+                document.getElementById('memory-usage').textContent = 
+                    data.memory + '%';
+            } catch(e) {
+                console.error('Error cargando estado:', e);
+            }
+        }
+
+        // Cargar estado cada 10 segundos
+        setInterval(loadSystemStatus, 10000);
+        loadSystemStatus();
+    </script>
+</body>
+</html>
