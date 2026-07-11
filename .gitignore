@@ -1,0 +1,51 @@
+# .gitignore - Archivos a ignorar en Git
+
+# Archivos de entorno
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+*.pid
+
+# Datos sensibles
+data/db/*.db
+data/backups/*.tar.gz
+*.pem
+*.key
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Temporales
+tmp/
+temp/
+*.tmp
+
+# IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
